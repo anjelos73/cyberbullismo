@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBERCHOICE - Quiz Cyberbullismo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #FF6B35;
+            --color-secondary: #004E89;
+            --color-success: #28a745;
+            --color-danger: #dc3545;
+            --color-warning: #ffc107;
+            --color-dark: #1a1a1a;
+            --color-light: #f8f9fa;
+            --color-white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--color-white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-white);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HOME SECTION */
+        .home-content {
+            text-align: center;
+        }
+
+        .home-content h2 {
+            color: var(--color-secondary);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .home-content p {
+            color: #555;
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .home-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.05em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #ff5722 100%);
+            color: var(--color-white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--color-secondary);
+            color: var(--color-white);
+        }
+
+        .btn-secondary:hover {
+            background: #003560;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 78, 137, 0.4);
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: var(--color-white);
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--color-danger);
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* QUIZ SECTION */
+        .quiz-progress {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            text-align: right;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .question-number {
+            color: var(--color-secondary);
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .scenario {
+            background: #f0f4f8;
+            padding: 25px;
+            border-left: 5px solid var(--color-primary);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: var(--color-dark);
+        }
+
+        .scenario h3 {
+            color: var(--color-secondary);
+            margin-bottom: 10px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--color-white);
+        }
+
+        .option:hover {
+            border-color: var(--color-primary);
+            background: #f9f9f9;
+        }
+
+        .option input[type="radio"] {
+            margin-top: 3px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--color-primary);
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 1em;
+            color: var(--color-dark);
+        }
+
+        .option.selected {
+            background: #e8f5e9;
+            border-color: var(--color-success);
+        }
+
+        .option.correct {
+            background: #c8e6c9;
+            border-color: var(--color-success);
+        }
+
+        .option.incorrect {
+            background: #ffcdd2;
+            border-color: var(--color-danger);
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            animation: slideDown 0.5s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation.correct {
+            background: #c8e6c9;
+            border-left: 5px solid var(--color-success);
+            color: #2e7d32;
+        }
+
+        .explanation.incorrect {
+            background: #ffcdd2;
+            border-left: 5px solid var(--color-danger);
+            color: #c62828;
+        }
+
+        .explanation h4 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .explanation p {
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .quiz-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* RESULTS SECTION */
+        .results-content {
+            text-align: center;
+        }
+
+        .score-display {
+            margin: 30px 0;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: bold;
+            color: var(--color-white);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .score-circle.excellent {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .score-circle.good {
+            background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
+        }
+
+        .score-circle.fair {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
+        .score-circle.poor {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        }
+
+        .rating {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .rating-label {
+            color: var(--color-secondary);
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .results-summary {
+            background: #f0f4f8;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--color-secondary);
+            font-weight: bold;
+        }
+
+        .summary-value {
+            color: var(--color-dark);
+            font-weight: bold;
+        }
+
+        .results-message {
+            background: #e3f2fd;
+            border-left: 5px solid var(--color-secondary);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: var(--color-secondary);
+            line-height: 1.6;
+        }
+
+        /* STATISTICS SECTION */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--color-white);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .percentage {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .chart-box {
+            background: #f0f4f8;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-box h3 {
+            color: var(--color-secondary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-item {
+            margin-bottom: 20px;
+        }
+
+        .chart-item-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: var(--color-dark);
+            font-weight: 500;
+        }
+
+        .chart-item-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-item-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: var(--color-white);
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: width 0.5s;
+        }
+
+        .chart-item-fill.correct {
+            background: linear-gradient(90deg, var(--color-success) 0%, #20c997 100%);
+        }
+
+        .chart-item-fill.incorrect {
+            background: linear-gradient(90deg, var(--color-danger) 0%, #fd7e14 100%);
+        }
+
+        .no-data {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 1.05em;
+        }
+
+        .reset-button {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 5px solid var(--color-warning);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .info-box p {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+                font-size: 2.2em;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            .home-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ CYBERCHOICE</h1>
+            <p>Un quiz interattivo per imparare a riconoscere il cyberbullismo e agire correttamente</p>
+        </div>
+
+        <div class="content">
+            <!-- HOME SECTION -->
+            <section id="homeSection" class="section active">
+                <div class="home-content">
+                    <h2>Benvenuto!</h2>
+                    <p>Questo quiz è stato creato per insegnare ai ragazzi di 15-18 anni come riconoscere e affrontare correttamente le situazioni di cyberbullismo.</p>
+                    <p><strong>Scegli cosa vuoi fare:</strong></p>
+                    <div class="home-buttons">
+                        <button class="btn btn-primary" onclick="startQuiz()">📝 Gioca al Quiz</button>
+                        <button class="btn btn-secondary" onclick="showStatistics()">📊 Visualizza Statistiche</button>
+                    </div>
+                    <div class="info-box">
+                        <p>💡 <strong>Nota:</strong> I tuoi dati non vengono registrati personalmente. Le risposte vengono salvate solo per calcolare le statistiche globali (anonimamente).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- QUIZ SECTION -->
+            <section id="quizSection" class="section">
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="questionCounter">1/10</span>
+                    </div>
+                </div>
+
+                <div id="quizContent"></div>
+
+                <div class="quiz-buttons">
+                    <button class="btn btn-secondary" onclick="previousQuestion()">← Indietro</button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Avanti →</button>
+                </div>
+            </section>
+
+            <!-- RESULTS SECTION -->
+            <section id="resultsSection" class="section">
+                <div class="results-content">
+                    <h2>Risultati del Quiz!</h2>
+                    <div class="score-display">
+                        <div id="scoreCircle" class="score-circle excellent">
+                            <span id="scoreValue">0</span>
+                            <span style="font-size: 0.5em; margin-top: 5px;">%</span>
+                        </div>
+                        <div class="rating-label" id="ratingLabel">Eccellente!</div>
+                        <div id="ratingMessage"></div>
+                    </div>
+
+                    <div class="results-summary">
+                        <div class="summary-item">
+                            <span class="summary-label">Risposte Corrette:</span>
+                            <span class="summary-value" id="correctAnswers">0/10</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Risposte Sbagliate:</span>
+                            <span class="summary-value" id="wrongAnswers">0/10</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Percentuale di Successo:</span>
+                            <span class="summary-value" id="successPercentage">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="results-message" id="resultsMessage"></div>
+
+                    <div class="quiz-buttons">
+                        <button class="btn btn-primary" onclick="startQuiz()">🔄 Ripeti il Quiz</button>
+                        <button class="btn btn-secondary" onclick="goHome()">🏠 Torna alla Home</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATISTICS SECTION -->
+            <section id="statisticsSection" class="section">
+                <h2 style="text-align: center; color: var(--color-secondary); margin-bottom: 30px;">📊 Statistiche Globali</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Totale Partite</h3>
+                        <div class="value" id="totalGames">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Risposta Corrette</h3>
+                        <div class="value" id="globalCorrectPercentage">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Risposta Sbagliate</h3>
+                        <div class="value" id="globalIncorrectPercentage">0%</div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div class="chart-box">
+                        <h3>📈 Percentuale Globale</h3>
+                        <div id="globalChart"></div>
+                    </div>
+                    <div class="chart-box">
+                        <h3>❓ Analisi per Domanda</h3>
+                        <div id="questionChart"></div>
+                    </div>
+                </div>
+
+                <div class="reset-button">
+                    <button class="btn btn-secondary" onclick="goHome()">🏠 Torna alla Home</button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {
+            "title": "CYBERCHOICE",
+            "questions": [
+                {
+                    "id": 1,
+                    "scenario": "Marco riceve messaggi offensivi e minacciosi da un account anonimo sui social durante tutta la giornata. Cosa dovrebbe fare subito?",
+                    "options": [
+                        {
+                            "text": "Rispondere immediatamente agli insulti per difendersi",
+                            "correct": false,
+                            "explanation_wrong": "Rispondere ai bulli alimenta il cyberbullismo e può peggiorare la situazione.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Bloccare l'utente e segnalare il contenuto alla piattaforma",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Bloccare e segnalare sono le azioni più efficaci. Non nutrire il bullo con risposte e lasciare che la piattaforma agisca è la scelta giusta."
+                        },
+                        {
+                            "text": "Ignorare completamente senza fare nulla",
+                            "correct": false,
+                            "explanation_wrong": "Anche se ignorare è meglio che rispondere, bloccare e segnalare protegge davvero il tuo account.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Condividere i messaggi con tutti i tuoi amici per avere supporto",
+                            "correct": false,
+                            "explanation_wrong": "Condividere pubblicamente amplifica il cyberbullismo e aumenta il pubblico che vede gli insulti.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "scenario": "Sofia scopre che un'amica ha creato un account falso usando il suo nome per scrivere messaggi imbarazzanti. Quale azione è la più appropriata?",
+                    "options": [
+                        {
+                            "text": "Segnalare l'account falso alla piattaforma e conservare le prove (screenshot) della denigrazione",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Questa è la sostituzione della persona - un grave tipo di cyberbullismo. Segnalare e conservare prove è essenziale per eventuali azioni legali."
+                        },
+                        {
+                            "text": "Creare a sua volta un account falso per vendicarsi",
+                            "correct": false,
+                            "explanation_wrong": "Due torti non fanno una ragione. Anche tu entreresti nel cyberbullismo e potresti avere conseguenze legali.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Confrontarsi immediatamente in privato per risolvere",
+                            "correct": false,
+                            "explanation_wrong": "La situazione è già sfuggita di mano. Hai bisogno dell'aiuto di un adulto e della piattaforma.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Cambiare semplicemente il tuo numero di telefono e profilo",
+                            "correct": false,
+                            "explanation_wrong": "Scappare non risolve il problema. L'account falso rimane attivo e può continuare a danneggiare la tua reputazione.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "scenario": "Luca vede che una foto imbarazzante di un compagno di classe è stata condivisa su un gruppo chat. Cosa dovrebbe fare?",
+                    "options": [
+                        {
+                            "text": "Scaricare la foto per tenerla, magari potrebbe servirvi in futuro",
+                            "correct": false,
+                            "explanation_wrong": "Scaricare e conservare una foto imbarazzante è illecito. È diffusione di contenuti senza consenso e può avere conseguenze legali.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Inoltrarla ad altri amici perché è 'divertente'",
+                            "correct": false,
+                            "explanation_wrong": "Condividere una foto umiliante è denigrazione e cyberbullismo. Anche tu diventi colpevole di diffusione.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Non scaricare, non condividere, e se possibile avvertire il compagno e suggerire di bloccare chi l'ha postata",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Perfetto! Non sei uno spettatore passivo. Proteggere gli altri dal cyberbullismo e non amplificare il danno è la scelta corretta."
+                        },
+                        {
+                            "text": "Chiedergli il permesso prima di condividerla",
+                            "correct": false,
+                            "explanation_wrong": "Se la foto è imbarazzante, non dovrebbe essere condivisa affatto. Chiedere il permesso non rende la situazione etica.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "scenario": "Emma sta per postare una foto in costume su Instagram dove tutti possono vederla. Cosa dovrebbe considerare?",
+                    "options": [
+                        {
+                            "text": "Non importante, una volta cancellata sparisce da internet",
+                            "correct": false,
+                            "explanation_wrong": "SBAGLIATO! Tutto ciò che posti online è PUBBLICO e PERMANENTE. Anche se cancelli, gli altri hanno già scaricato la foto.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Riflettere sul fatto che chiunque può scaricarla, farci uno screenshot, e condividerla in futuro senza consenso",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Esatto! Prima di postare devi pensare: potrebbe questa immagine danneggiarmi in futuro? Qualcuno potrebbe usarla male? È la consapevolezza giusta."
+                        },
+                        {
+                            "text": "Mettere il filtro sulla privacy, così nessuno la vedrà",
+                            "correct": false,
+                            "explanation_wrong": "Anche con profilo privato, i tuoi contatti attuali possono salvare tutto. I filtri non sono una vera protezione assoluta.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Postare tutto senza pensare, tanto è il mio account",
+                            "correct": false,
+                            "explanation_wrong": "Il tuo profilo online non è davvero 'tuo' - tutti i tuoi contatti vedono e possono salvare tutto quello che posti.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 5,
+                    "scenario": "Andrea riceve un messaggio privato da uno sconosciuto che dice: 'Ciao! Mi piaci molto, posso avere la tua foto?'. Cosa dovrebbe fare?",
+                    "options": [
+                        {
+                            "text": "Inviare la foto perché sembra interessato",
+                            "correct": false,
+                            "explanation_wrong": "PERICOLO! Questo è un metodo di grooming. Non condividere foto con sconosciuti online. Potrebbe essere sexting o sfruttamento.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Non rispondere, bloccare il profilo, parlarne con un adulto di fiducia",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Perfetto! Non condividere mai informazioni personali o foto con sconosciuti. È protezione di base online. Bloccare e avvisare un adulto è fondamentale."
+                        },
+                        {
+                            "text": "Chiedere all'amico cosa fare",
+                            "correct": false,
+                            "explanation_wrong": "Devi parlare direttamente con un ADULTO di fiducia (genitore, insegnante), non con gli amici.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Continuare a chattare per capire chi è davvero",
+                            "correct": false,
+                            "explanation_wrong": "Più parli, più il predatore raccoglie informazioni. Blocca subito e non continuare la conversazione.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 6,
+                    "scenario": "Nella chat di classe, Giulia pubblica uno screenshot di una conversazione privata di Matteo, creando così imbarazzo pubblico. Cos'è successo?",
+                    "options": [
+                        {
+                            "text": "Esposizione di confidenze personali - una forma di cyberbullismo",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Esatto! Divulgare confidenze o informazioni riservate di un'altra persona è cyberbullismo. Viola la privacy."
+                        },
+                        {
+                            "text": "Un scherzo innocente",
+                            "correct": false,
+                            "explanation_wrong": "Non c'è niente di innocuo nel condividere conversazioni private senza consenso. È umiliante.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Una pratica normale nei gruppi chat",
+                            "correct": false,
+                            "explanation_wrong": "NO! Anche se altri lo fanno, non significa sia giusto. Rispetta la privacy delle conversazioni private.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Non è nulla, perché è solo nella chat della classe",
+                            "correct": false,
+                            "explanation_wrong": "La chat della classe è ancora un luogo pubblico con tante persone. Esporre informazioni private è comunque cyberbullismo.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 7,
+                    "scenario": "Thomas nota che un suo profilo social ha una password debole (123456). Come dovrebbe comportarsi?",
+                    "options": [
+                        {
+                            "text": "Cambiarla immediatamente con una password complessa e unica",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Perfetto! Usa password robuste come 'Un_222-9u@ttro!' o 'L@Mi@ca$aPref3rit@_'. Una password forte protegge dal furto di account."
+                        },
+                        {
+                            "text": "Lasciarla così, è facile da ricordare",
+                            "correct": false,
+                            "explanation_wrong": "Password facili come '123456' o 'password' sono le prime che gli hacker provano. Il tuo account è a rischio.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Usare il tuo nome + anno di nascita",
+                            "correct": false,
+                            "explanation_wrong": "Queste informazioni si trovano facilmente online e nei social. Sono ancora troppo deboli.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Chiedere a un amico che password usare",
+                            "correct": false,
+                            "explanation_wrong": "La password deve essere solo tua. Non condividerla con nessuno, nemmeno gli amici.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 8,
+                    "scenario": "Durante un video game online, alcuni giocatori insultano e minacciano un compagno. Come dovrebbe reagire?",
+                    "options": [
+                        {
+                            "text": "Continuare a giocare e fare finta di nulla",
+                            "correct": false,
+                            "explanation_wrong": "Non essere uno spettatore passivo. Gli insulti online nei giochi sono una forma di cyberbullismo grave.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Bloccare i giocatori offensivi, segnalare il comportamento al moderatore del gioco",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Esatto! Anche nei videogiochi ci sono regole. I messaggi violenti e le minacce vanno segnalati. Aiuta il compagno."
+                        },
+                        {
+                            "text": "Insultarli a sua volta per difendersi",
+                            "correct": false,
+                            "explanation_wrong": "Due persone che si insultano creano solo più tossicità. Segnala ai moderatori, non combattere il fuoco con il fuoco.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Raccontare tutto ai compagni per ridere insieme",
+                            "correct": false,
+                            "explanation_wrong": "Ridere insieme degli insulti non è supporto, è mancanza di empatia verso chi li riceve.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 9,
+                    "scenario": "Benedetta ha notato che il suo miglior amico sta postando contenuti sempre più negativi e si disconnette spesso. Quali potrebbero essere segnali di allarme?",
+                    "options": [
+                        {
+                            "text": "Cambiamenti nel comportamento, evitamento dei dispositivi, perdita di interesse, possibile calo scolastico",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "Questi sono i segnali d'allarme classici di una vittima di cyberbullismo. Se noti questi comportamenti in un amico, offri supporto e incoraggia a parlare con un adulto."
+                        },
+                        {
+                            "text": "Solo che è pigro e gli piace stare solo",
+                            "correct": false,
+                            "explanation_wrong": "Cambiamenti improvvisi nel comportamento sono sempre sospetti. Potrebbe essere un segnale di disagio psicologico.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Niente di speciale, è normale per gli adolescenti",
+                            "correct": false,
+                            "explanation_wrong": "NO! Anche se gli adolescenti cambiano, i cambiamenti IMPROVVISI e SIGNIFICATIVI sono preoccupanti.",
+                            "explanation_right": ""
+                        },
+                        {
+                            "text": "Che sta mentendo su come si sente",
+                            "correct": false,
+                            "explanation_wrong": "Non giudicare. Se mostra questi segnali, sta probabilmente soffrendo per davvero. Offri aiuto.",
+                            "explanation_right": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 10,
+                    "scenario": "Quale tra queste è una strategia SBAGLIATA per proteggersi dal cyberbullismo?",
+                    "options": [
+                        {
+                            "text": "Rendere il profilo privato e controllare chi può commentare i tuoi post",
+                            "correct": false,
+                            "explanation_wrong": "",
+                            "explanation_right": "Questa è corretta! I profili privati proteggono la tua privacy."
+                        },
+                        {
+                            "text": "Disattivare la geolocalizzazione quando non necessaria",
+                            "correct": false,
+                            "explanation_wrong": "",
+                            "explanation_right": "Anche questa è corretta! La geolocalizzazione espone la tua posizione."
+                        },
+                        {
+                            "text": "Condividere il tuo numero di telefono con chiunque ti chieda, tanto non può farti nulla",
+                            "correct": true,
+                            "explanation_wrong": "",
+                            "explanation_right": "NO! Condividere il numero con sconosciuti è pericoloso. Sarai contattato da gente malintenzionata. Condividi dati personali solo con persone fidate."
+                        },
+                        {
+                            "text": "Usare password complesse e diversificare per ogni account",
+                            "correct": false,
+                            "explanation_wrong": "",
+                            "explanation_right": "Questa è corretta! Password forti proteggono i tuoi account."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizStarted = false;
+
+        function startQuiz() {
+            quizStarted = true;
+            currentQuestion = 0;
+            userAnswers = new Array(quizData.questions.length).fill(null);
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            currentQuestion = index;
+            const question = quizData.questions[index];
+            
+            let html = `<div class="question-number">Domanda ${index + 1} di ${quizData.questions.length}</div>`;
+            html += `<div class="scenario"><h3>${question.scenario}</h3></div>`;
+            html += `<div class="options">`;
+            
+            question.options.forEach((option, optIndex) => {
+                const isSelected = userAnswers[index] === optIndex;
+                const selected = isSelected ? 'selected' : '';
+                html += `<label class="option ${selected}">
+                    <input type="radio" name="option" value="${optIndex}" ${isSelected ? 'checked' : ''} 
+                           onchange="selectOption(${optIndex})">
+                    <span class="option-text">${option.text}</span>
+                </label>`;
+            });
+            
+            html += `</div>`;
+
+            // Mostra spiegazione se risposta data
+            if (userAnswers[index] !== null) {
+                const selectedOptionIndex = userAnswers[index];
+                const selectedOption = question.options[selectedOptionIndex];
+                const isCorrect = selectedOption.correct;
+                
+                const explanationText = isCorrect ? selectedOption.explanation_right : selectedOption.explanation_wrong;
+                const explanationClass = isCorrect ? 'correct' : 'incorrect';
+                const explanationTitle = isCorrect ? '✅ Risposta Corretta!' : '❌ Risposta Sbagliata!';
+                
+                html += `<div class="explanation show ${explanationClass}">
+                    <h4>${explanationTitle}</h4>
+                    <p>${explanationText}</p>
+                </div>`;
+            }
+
+            document.getElementById('quizContent').innerHTML = html;
+            
+            // Aggiorna barra di progresso
+            const progress = ((index + 1) / quizData.questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('questionCounter').textContent = `${index + 1}/${quizData.questions.length}`;
+            
+            // Aggiorna bottone next
+            const nextBtn = document.getElementById('nextBtn');
+            if (index === quizData.questions.length - 1) {
+                nextBtn.textContent = 'Vedi Risultati ✓';
+                nextBtn.onclick = function() { endQuiz(); };
+            } else {
+                nextBtn.textContent = 'Avanti →';
+                nextBtn.onclick = function() { nextQuestion(); };
+            }
+
+            // Abilita/disabilita bottone indietro
+            document.querySelector('.quiz-buttons button:nth-child(1)').style.display = 
+                index === 0 ? 'none' : 'block';
+
+            showSection('quizSection');
+        }
+
+        function selectOption(optIndex) {
+            userAnswers[currentQuestion] = optIndex;
+            showQuestion(currentQuestion);
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentQuestion] === null) {
+                alert('Per favore, seleziona una risposta prima di procedere!');
+                return;
+            }
+            if (currentQuestion < quizData.questions.length - 1) {
+                showQuestion(currentQuestion + 1);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function endQuiz() {
+            // Calcola punteggio
+            let correct = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer !== null && quizData.questions[index].options[answer].correct) {
+                    correct++;
+                }
+            });
+
+            const percentage = Math.round((correct / quizData.questions.length) * 100);
+            
+            // Salva risultati nel localStorage
+            saveQuizResult(correct, quizData.questions.length - correct, percentage);
+
+            // Mostra risultati
+            showResults(correct, quizData.questions.length - correct, percentage);
+        }
+
+        function showResults(correct, wrong, percentage) {
+            document.getElementById('scoreValue').textContent = percentage;
+            document.getElementById('correctAnswers').textContent = `${correct}/${quizData.questions.length}`;
+            document.getElementById('wrongAnswers').textContent = `${wrong}/${quizData.questions.length}`;
+            document.getElementById('successPercentage').textContent = `${percentage}%`;
+
+            const scoreCircle = document.getElementById('scoreCircle');
+            const ratingLabel = document.getElementById('ratingLabel');
+            const ratingMessage = document.getElementById('resultsMessage');
+
+            scoreCircle.className = 'score-circle';
+            if (percentage >= 90) {
+                scoreCircle.classList.add('excellent');
+                ratingLabel.textContent = '🌟 Eccellente!';
+                ratingMessage.innerHTML = '<strong>Congratulazioni!</strong> Hai una comprensione eccezionale del cyberbullismo. Continua così e aiuta anche i tuoi compagni!';
+            } else if (percentage >= 70) {
+                scoreCircle.classList.add('good');
+                ratingLabel.textContent = '✨ Molto Bene!';
+                ratingMessage.innerHTML = '<strong>Bravissimo!</strong> Hai una buona comprensione di come affrontare il cyberbullismo. Rileggi le domande sbagliate per migliorare.';
+            } else if (percentage >= 50) {
+                scoreCircle.classList.add('fair');
+                ratingLabel.textContent = '👍 Discreto';
+                ratingMessage.innerHTML = '<strong>Non male!</strong> Hai una comprensione di base, ma ci sono ancora alcune situazioni da approfondire. Riprova dopo aver studiato di più!';
+            } else {
+                scoreCircle.classList.add('poor');
+                ratingLabel.textContent = '📚 Hai bisogno di Studio';
+                ratingMessage.innerHTML = '<strong>Non scoraggiarti!</strong> Questo è un argomento importante. Rileggi attentamente le spiegazioni delle risposte e riprova il quiz!';
+            }
+
+            showSection('resultsSection');
+        }
+
+        function saveQuizResult(correct, wrong, percentage) {
+            let stats = JSON.parse(localStorage.getItem('cyberchoiceStats')) || {
+                totalGames: 0,
+                totalCorrect: 0,
+                totalWrong: 0,
+                questionStats: new Array(10).fill(null).map(() => ({ correct: 0, wrong: 0 }))
+            };
+
+            stats.totalGames++;
+            stats.totalCorrect += correct;
+            stats.totalWrong += wrong;
+
+            userAnswers.forEach((answer, index) => {
+                if (answer !== null) {
+                    if (quizData.questions[index].options[answer].correct) {
+                        stats.questionStats[index].correct++;
+                    } else {
+                        stats.questionStats[index].wrong++;
+                    }
+                }
+            });
+
+            localStorage.setItem('cyberchoiceStats', JSON.stringify(stats));
+        }
+
+        function showStatistics() {
+            const stats = JSON.parse(localStorage.getItem('cyberchoiceStats'));
+
+            if (!stats || stats.totalGames === 0) {
+                document.getElementById('globalChart').innerHTML = '<div class="no-data">Nessun dato disponibile. Gioca un quiz per vedere le statistiche!</div>';
+                document.getElementById('questionChart').innerHTML = '';
+                document.getElementById('totalGames').textContent = '0';
+                document.getElementById('globalCorrectPercentage').textContent = '0%';
+                document.getElementById('globalIncorrectPercentage').textContent = '0%';
+            } else {
+                const totalAnswers = stats.totalCorrect + stats.totalWrong;
+                const globalCorrectPercentage = Math.round((stats.totalCorrect / totalAnswers) * 100);
+                const globalIncorrectPercentage = 100 - globalCorrectPercentage;
+
+                document.getElementById('totalGames').textContent = stats.totalGames;
+                document.getElementById('globalCorrectPercentage').textContent = globalCorrectPercentage + '%';
+                document.getElementById('globalIncorrectPercentage').textContent = globalIncorrectPercentage + '%';
+
+                // Grafico globale
+                let globalChartHtml = `
+                    <div class="chart-item">
+                        <div class="chart-item-label">
+                            <span>Risposte Corrette</span>
+                            <span>${stats.totalCorrect} (${globalCorrectPercentage}%)</span>
+                        </div>
+                        <div class="chart-item-bar">
+                            <div class="chart-item-fill correct" style="width: ${globalCorrectPercentage}%"></div>
+                        </div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-item-label">
+                            <span>Risposte Sbagliate</span>
+                            <span>${stats.totalWrong} (${globalIncorrectPercentage}%)</span>
+                        </div>
+                        <div class="chart-item-bar">
+                            <div class="chart-item-fill incorrect" style="width: ${globalIncorrectPercentage}%"></div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('globalChart').innerHTML = globalChartHtml;
+
+                // Grafico per domanda
+                let questionChartHtml = '';
+                stats.questionStats.forEach((qStats, index) => {
+                    const total = qStats.correct + qStats.wrong;
+                    if (total > 0) {
+                        const correctPercentage = Math.round((qStats.correct / total) * 100);
+                        questionChartHtml += `
+                            <div class="chart-item">
+                                <div class="chart-item-label">
+                                    <span>Domanda ${index + 1}</span>
+                                    <span>${qStats.correct}/${total}</span>
+                                </div>
+                                <div class="chart-item-bar">
+                                    <div class="chart-item-fill correct" style="width: ${correctPercentage}%">${correctPercentage}%</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                document.getElementById('questionChart').innerHTML = questionChartHtml || '<div class="no-data">Nessun dato disponibile</div>';
+            }
+
+            showSection('statisticsSection');
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function goHome() {
+            showSection('homeSection');
+        }
+    </script>
+</body>
+</html>
